@@ -10,9 +10,8 @@
 {% endif %}
 
 <div class="bg-white px-3 py-4 rounded-xl my-6">
-  <h1 class="font-bold text-3xl text-center pb-5">Doctor Registration</h1>
-  <h5 class="font-bold text-center underline"><a href="{% url 'pregister' %}">Create Patient Account</a></h5>
-
+  <h1 class="font-bold text-3xl text-center pb-5">Patient Registration</h1>
+  <h4 class="text-center font-bold underline"><a href="{% url 'register' %}">Create Doctor Account</a></h4>
   <div class="w-full mt-10">
     <form method="post" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
       {% csrf_token %}
@@ -147,33 +146,6 @@
         </div>
       </div>
 
-      <div class="flex flex-wrap -mx-3 mb-6">
-        <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-          <label class="block uppercase tracking-wide  text-gray-700 text-xs font-bold mb-2"
-            for="{{ form.specialization.id_for_label }}">
-            {{ form.specialization.label }}
-          </label>
-          {{ form.specialization }}
-          {% if form.specialization.errors %}
-          {% for error in form.specialization.errors %}
-          <p class="text-red-600 text-sm italic pb-2">{{ error }}</p>
-          {% endfor %}
-          {% endif %}
-        </div>
-
-        <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-          <label class="block uppercase tracking-wide  text-gray-700 text-xs font-bold mb-2"
-            for="{{ form.availabletimeid_for_label }}">
-            {{ form.availabletime.label }}
-          </label>
-          {{ form.availabletime }}
-          {% if form.availabletime.errors %}
-          {% for error in form.availabletime.errors %}
-          <p class="text-red-600 text-sm italic pb-2">{{ error }}</p>
-          {% endfor %}
-          {% endif %}
-        </div>
-      </div>
 
       <div class="flex items-center justify-between">
         <button
