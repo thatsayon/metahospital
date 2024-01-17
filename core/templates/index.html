@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head_title %}Meta Hospital{% endblock %} {% block content %}
+
+<h1>{{ spec }}</h1>
+<div>
+ 
+  <div class="max-w-lg mx-auto p-4 bg-white shadow-md rounded-md">
+  <div class="flex items-center border-b border-gray-300 py-2">
+    <div class="relative w-full">
+    <select
+        id="specializationSelect"
+        class="w-full appearance-none bg-transparent border-none text-gray-700 py-1 px-4 pr-8 leading-tight focus:outline-none"
+    >
+        <option value="all" selected>All</option>
+        {% for specialization in specializations %}
+            <option value="{{ specialization.slug }}">{{ specialization.name }}</option>
+        {% endfor %}
+    </select>
+    <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+        <svg class="h-4 w-4 fill-current text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+            <path fill-rule="evenodd" d="M20 10a10 10 0 11-20 0 10 10 0 0120 0zm-2 0a8 8 0 11-16 0 8 8 0 0116 0z" clip-rule="evenodd" />
+        </svg>
+    </div>
+</div>
+<a
+    id="searchLink"
+    href="#"
+    class="flex-shrink-0 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 ml-4 rounded focus:outline-none focus:shadow-outline"
+>
+    Search
+</a>
+
+<script>
+    document.getElementById('searchLink').addEventListener('click', function () {
+        var specializationSelect = document.getElementById('specializationSelect');
+        var selectedValue = specializationSelect.options[specializationSelect.selectedIndex].value;
+        var searchLink = document.getElementById('searchLink');
+        searchLink.href = '/' +selectedValue + '/';
+    });
+</script>
+
+  </div>
+</div>
+
+</div>
+<div class="mt-6 grid gap-6 grid-cols-1 justify-center sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
+  
+  {% for doctor in doctors %}
+  <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <div class="flex justify-end px-4 pt-4">
+        <button id="dropdownButton" data-dropdown-toggle="dropdown" class="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5" type="button">
+            <span class="sr-only">Open dropdown</span>
+            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
+                <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
+            </svg>
+        </button>
+        <!-- Dropdown menu -->
+        <div id="dropdown" class="z-10 hidden text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+            <ul class="py-2" aria-labelledby="dropdownButton">
+            <li>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Edit</a>
+            </li>
+            <li>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Export Data</a>
+            </li>
+            <li>
+                <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete</a>
+            </li>
+            </ul>
+        </div>
+    </div>
+    <div class="flex flex-col items-center pb-10">
+      {% if doctor.image %}
+      <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="{{ doctor.image.url }}" alt="Bonnie image"/>
+      {% else %}
+      <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg" alt="Bonnie image"/>
+      {% endif %}
+
+        <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">{{ doctor.user.first_name }} {{ doctor.user.last_name }}</h5>
+        <span class="text-sm text-gray-500 dark:text-gray-400">
+
+          {% for specialization in doctor.specialization.all %}
+          {{ specialization.name }}
+          {% if not forloop.last %}, {% endif %}
+        {% endfor %}
+          </span>
+        <div class="flex mt-4 md:mt-6">
+            <a href="{% url 'detail' doctor.id %}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">View Details</a>
+        </div>
+    </div>
+</div>
+  {% endfor %}
+
+</div>
+{% endblock %}
