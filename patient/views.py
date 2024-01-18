@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import FormView
-from .forms import UserRegistrationForm
+from .forms import UserRegistrationForm, PatientUpdateForm
 from django.urls import reverse_lazy
 from django.contrib.auth import login, logout
 from django.contrib.auth.tokens import default_token_generator
@@ -9,6 +9,7 @@ from django.utils.encoding import force_bytes
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, LogoutView
+from django.views import View
 
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -50,3 +51,18 @@ def activate(request, uid64, token):
         return redirect('login')
     else:
         return redirect('register')
+
+
+class PatientAccountUpdate(View):
+    template_name = 'profile.html'
+
+    def get(self, request):
+        form = PatientUpdateForm(instance=request.user)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = PatientUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+        return render(request, self.template_name, {'form': form})

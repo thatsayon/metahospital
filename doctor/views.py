@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import FormView, TemplateView
-from .forms import UserRegistrationForm
+from .forms import UserRegistrationForm, DoctorUpdateForm
 from django.contrib.auth import login, logout
 from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView, LogoutView
@@ -42,3 +42,18 @@ class DoctorDetailView(TemplateView):
         id = self.kwargs.get('id')
         context['doctor'] = Doctor.objects.get(pk=id)
         return context
+
+
+class DoctorUpdateView(View):
+    template_name = 'profile.html'
+
+    def get(self, request):
+        form = DoctorUpdateForm(instance=request.user)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = DoctorUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+        return render(request, self.template_name, {'form': form})
