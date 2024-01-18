@@ -15,3 +15,17 @@ def book_appointment(request, doctor_id):
     )
 
     return redirect(f"/doctor/detail/{doctor_id}/")
+
+
+def delete_patient(request, doctor_id, patient_id):
+    doctor = Doctor.objects.get(pk=doctor_id)
+    patient = Patient.objects.get(pk=patient_id)
+    appointment = Appointment.objects.filter(
+        doctor=doctor,
+        patient=patient
+    )
+    if appointment.exists():
+        appointment.delete()
+        return redirect('profile')
+    else:
+        return redirect('profile')

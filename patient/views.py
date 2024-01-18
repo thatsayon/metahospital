@@ -10,6 +10,9 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views import View
+from django.core.exceptions import ObjectDoesNotExist
+from appoinment.models import Appointment
+from doctor.models import Doctor
 
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -58,11 +61,20 @@ class PatientAccountUpdate(View):
 
     def get(self, request):
         form = PatientUpdateForm(instance=request.user)
-        return render(request, self.template_name, {'form': form})
+        try:
+            doctor = Doctor.objects.get(user=request.user)
+            appointments = Appointment.objects.filter(
+                doctor=doctor
+            )
+            context = {'form': form, 'appointments': appointments}
+        except ObjectDoesNotExist:
+            context = {'form': form, 'appointments': None}
+        return render(request, self.template_name, context)
 
     def post(self, request):
         form = PatientUpdateForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
             return redirect('profile')
-        return render(request, self.template_name, {'form': form})
+        context = {'form': form, 'name': 'ayon'}
+        return render(request, self.template_name, context)
