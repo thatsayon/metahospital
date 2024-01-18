@@ -10,9 +10,15 @@ Detail
   <div class="flex items-center justify-start md:justify-between mb-4">
 
     <div class="flex-shrink-0 mr-8">
+      {% if doctor.image %}
       <img src="{{ doctor.image.url }}" alt="Profile Picture" class="w-32 h-32 rounded-full shadow-lg md:block hidden">
       <img src="{{ doctor.image.url }}" alt="Profile Picture"
         class="w-32 h-32 rounded-full shadow-lg md:hidden mx-auto mb-4">
+      {% else %}
+      <img src="https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg" alt="Profile Picture" class="w-32 h-32 rounded-full shadow-lg md:block hidden">
+      <img src="https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg" alt="Profile Picture"
+        class="w-32 h-32 rounded-full shadow-lg md:hidden mx-auto mb-4">
+      {% endif %}
     </div>
 
     <div class="mr-6">
@@ -44,12 +50,56 @@ Detail
         {% endfor %}
       </div>
 
-      <button
+      <a
+        href="{% url 'appointment' doctor.id %}"
         class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
         Get an appointment
-      </button>
+      </a>
     </div>
   </div>
 </div>
+<div class="mt-4">
+  {% if can_review %}
+  <h1 class="text-center underline text-3xl mb-4">Review</h1>
+  <form method="post" action="">
+    {% csrf_token %} 
+    <label>Name:</label>
+    <br>
+    {{ review_form.name }}
+    <br>
+    {% if review_form.name.errors %}
+        <p class="text-red-600 text-sm italic pb-2">{{ review_form.name.errors.0 }}</p>
+    {% endif %}
 
+    <label>Comment:</label>
+    <br>
+    {{ review_form.comment }}
+    {% if review_form.comment.errors %}
+        <p class="text-red-600 text-sm italic pb-2">{{ review_form.comment.errors.0 }}</p>
+    {% endif %}
+
+    <div class="flex items-center justify-center w-full mt-4">
+        <button class="bg-blue-900 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+            Submit Review
+        </button>
+    </div>
+</form>
+
+  {% endif %}
+</div>
+
+{% if reviews is not None %}
+<div>
+  <h1 class="text-2xl font-bold underline">Reviews</h1>
+  <h2>Total Review: {{ reviews|length }}</h2>
+  <div>
+    {% for review in reviews %}
+    <div class="max-w-full mt-8 bg-white p-8 rounded-lg shadow-md">
+      <h3 class="text-xl font-bold">{{ review.name }}</h3>
+      <p>{{ review.comment }}</h3>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
 {% endblock %}

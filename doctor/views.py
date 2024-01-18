@@ -7,6 +7,10 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.views import View
 from django.shortcuts import redirect
 from .models import Doctor
+from appoinment.models import Appointment, Review
+from patient.models import Patient
+from appoinment.forms import ReviewForm
+from django.http import HttpResponseRedirect
 
 
 class UserRegistrationView(FormView):
@@ -36,12 +40,48 @@ class UserLogoutView(LogoutView):
 
 class DoctorDetailView(TemplateView):
     template_name = 'detail.html'
+    form_class = ReviewForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         id = self.kwargs.get('id')
         context['doctor'] = Doctor.objects.get(pk=id)
+        patient, created = Patient.objects.get_or_create(
+            user=self.request.user)
+        context['can_review'] = Appointment.objects.filter(
+            doctor=Doctor.objects.get(pk=id),
+            patient=patient
+        ).exists()
+        context['review_form'] = self.form_class()
+        try:
+            appointment = Appointment.objects.get(
+                doctor=Doctor.objects.get(pk=id),
+                patient=patient
+            )
+            reviews = Review.objects.filter(appointment=appointment)
+            context['reviews'] = reviews
+        except Exception:
+            context['reviews'] = None
         return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            id = self.kwargs.get('id')
+            doctor = Doctor.objects.get(pk=id)
+            patient, created = Patient.objects.get_or_create(
+                user=self.request.user)
+            appointment = Appointment.objects.get(
+                doctor=doctor,
+                patient=patient
+            )
+            form.save(appointment=appointment)
+            return HttpResponseRedirect(reverse_lazy('detail', kwargs={'id': id}))
+        return render(request, self.template_name, {'review_form': form})
+
+    def get_success_url(self):
+        id = self.kwargs.get('id')
+        return reverse_lazy('doctor_detail', kwargs={'id': id})
 
 
 class DoctorUpdateView(View):

@@ -44,7 +44,9 @@ INSTALLED_APPS = [
     'metahospital',
     'patient',
     'doctor',
+    'appoinment',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
