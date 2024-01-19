@@ -28,7 +28,9 @@ SECRET_KEY = 'django-insecure-u#y=m9@adj$hvz-17y$=nd*sn+s_&k1a0u@#^_#z5-olvxdd7_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = [
+    'https://meta-hospital.onrender.com', 'https://*.127.0.0.1']
 
 
 # Application definition
