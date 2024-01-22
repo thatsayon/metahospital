@@ -14,22 +14,27 @@ class UserRegistrationForm(UserCreationForm):
         empty_label="Select an availabletime"
     )
 
+    image = forms.ImageField()
+
     class Meta:
         model = User
-        fields = ['username', 'password1', 'password2',
-                  'first_name', 'last_name', 'email', 'specialization', 'availabletime']
+        fields = ['username', 'first_name', 'last_name', 'password1', 'password2',
+                  'email', 'specialization', 'availabletime', 'image']
 
     def save(self, commit=True):
         user = super().save(commit=True)
+        user.is_active = False
         if commit == True:
             user.save()
             specialization = self.cleaned_data.get('specialization')
             availabletime = self.cleaned_data.get('availabletime')
+            image = self.cleaned_data.get('image')
 
             doctor = Doctor.objects.create(
                 user=user,
                 fee=0,
                 meet_link="",
+                image=image,
             )
             doctor.specialization.set([specialization.id])
             doctor.available_time.set([specialization.id])

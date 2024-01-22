@@ -95,7 +95,7 @@ WSGI_APPLICATION = 'metahospital.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         # Feel free to alter this value to suit your needs.
-        default='postgres://libdata_user:FuqVkJfcJinp0cDeCvpDjMDYwGYABduF@dpg-cmcj65v109ks738vtfbg-a.oregon-postgres.render.com/libdata',
+        default='postgres://metahos_user:K4HwajdHSjHbzYNV8xoxugRL3Hxm1mK8@dpg-cmmu0gv109ks739bae90-a.oregon-postgres.render.com/metahos',
         conn_max_age=600
     )
 }
